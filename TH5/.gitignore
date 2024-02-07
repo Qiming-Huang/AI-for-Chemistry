@@ -1,2 +1,8 @@
 .vscode/
 imgs/
+logs/
+TH5json_origin/
+wandb/
+*.npz
+*.csv
+*.png
