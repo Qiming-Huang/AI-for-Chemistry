@@ -135,7 +135,20 @@ def prepare_TH5_data(label_type):
         cots = [0 for i in range(k+1)]
         for i in categories:
             cots[i] += 1  
-        return imgs, categories                                                    
+        return imgs, categories  
+    if label_type == "di":
+        k = 4
+        density = np.array(di)
+        quantiles = np.percentile(di, np.linspace(0, 100, k+1))
+
+        # [1, 644, 643, 642, 644]
+        # [0.3438  , 0.9873  , 1.095   , 1.194175, 1.4323  ]
+
+        categories = np.digitize(di, quantiles, right=True)
+        cots = [0 for i in range(k+1)]
+        for i in categories:
+            cots[i] += 1  
+        return imgs, categories                                                      
 
 # template
 class Lighting_Model(L.LightningModule):
@@ -210,7 +223,7 @@ class Lighting_Model(L.LightningModule):
     ####################
         
     def prepare_data(self):
-        x, y = prepare_TH5_data(label_type="density")
+        x, y = prepare_TH5_data(label_type="di")
 
         self.train_x, self.test_x, self.train_y, self.test_y = train_test_split(x, y, test_size=0.2, random_state=42, shuffle=True) 
         self.train_ds = TH5_data(self.train_x, self.train_y) 
