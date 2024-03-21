@@ -38,10 +38,10 @@ HB2 = labels['HB2'].to_list()
 # di
 k = 4
 di = np.array(di)
-quantiles = np.percentile(density, np.linspace(0, 100, k+1))
+quantiles = np.percentile(di, np.linspace(0, 100, k+1))
 
 # 使用cut函数将数据分配到不同的类别
-categories = np.digitize(density, quantiles, right=True)
+categories = np.digitize(di, quantiles, right=True)
 cots = [0 for i in range(k+1)]
 for i in categories:
     cots[i] += 1

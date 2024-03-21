@@ -1,0 +1,57 @@
+OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=1 run_mae_pretraining.py \
+        --data_path /home/qiming/Desktop/code/AI-for-Chemistry/TH5/th5_dataset/pretrain \
+        --mask_ratio 0.75 \
+        --model pretrain_mae_base_patch16_224 \
+        --batch_size 512 \
+        --opt adamw \
+        --opt_betas 0.9 0.95 \
+        --warmup_epochs 40 \
+        --epochs 1600 \
+        --output_dir /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/output/right_pretrained
+
+OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=1 run_class_finetuning.py \
+    --model vit_base_patch16_224 \
+    --data_path ${DATA_PATH} \
+    --finetune ${MODEL_PATH} \
+    --output_dir ${OUTPUT_DIR} \
+    --batch_size 128 \
+    --opt adamw \
+    --opt_betas 0.9 0.999 \
+    --weight_decay 0.05 \
+    --epochs 100 \
+    --dist_eval
+
+python run_mae_vis.py /home/qiming/Desktop/code/AI-for-Chemistry/TH5/th5_dataset/pretrain/pretrain_img/TH5_100020030889596.jpg \
+        /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/res_out \
+        /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/output/right_pretrained/checkpoint-1599.pth
+
+OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=1 run_class_finetuning.py \
+    --model vit_base_patch16_224 \
+    --data_path /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/data \
+    --data_set CIFAR \
+    --finetune /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/output/right_pretrained/checkpoint-399.pth \
+    --output_dir /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/finetuning_out \
+    --batch_size 128 \
+    --opt adamw \
+    --opt_betas 0.9 0.999 \
+    --weight_decay 0.05 \
+    --epochs 100 \
+    --nb_classes 100 \
+    --dist_eval
+
+# finetuning
+
+OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=1 run_class_finetuning.py \
+    --model vit_base_patch16_224 \
+    --data_path /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/data \
+    --data_set TH5 \
+    --finetune /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/output/right_pretrained/checkpoint-1599.pth \
+    --output_dir /home/qiming/Desktop/code/AI-for-Chemistry/TH5/MAE-pytorch/finetuning_out \
+    --batch_size 128 \
+    --opt adamw \
+    --opt_betas 0.9 0.999 \
+    --weight_decay 0.05 \
+    --epochs 40 \
+    --nb_classes 4 \
+    --num_workers 0 \
+    --dist_eval
