@@ -6,3 +6,6 @@ wandb/
 *.npz
 *.csv
 *.png
+*.pth
+th5_dataset/
+hirshfeld_data_feb24/
