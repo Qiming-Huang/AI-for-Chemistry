@@ -1,3 +1,4 @@
+## Make sure you are in the MAE-pytorch folder
 ## Run
 1. Pretrain
 ```bash
