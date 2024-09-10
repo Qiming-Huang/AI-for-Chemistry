@@ -1,2 +1,4 @@
 # AI-for-Chemistry
-RA 
+```python
+python main.py
+```
