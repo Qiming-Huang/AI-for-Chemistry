@@ -46,8 +46,8 @@ def RGB_to_Hex(tmp):
     return strs
 
 
-for i in [2,4,6]:
-    img = cv2.imread(f"./data/{i}.PNG")
+for img_idx in [2,4,6]:
+    img = cv2.imread(f"./data/{img_idx}.PNG")
     img = np.power(img/float(np.max(img)), 1.5)
     img = np.uint8(img * 255)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -132,4 +132,5 @@ for i in [2,4,6]:
             )    
             lengths.append(int(length))
     plt.imshow(mask1)
+    plt.savefig(f"./res/{img_idx}.PNG")
     plt.show()
